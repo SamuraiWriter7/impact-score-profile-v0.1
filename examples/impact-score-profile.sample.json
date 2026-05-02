@@ -1,0 +1,52 @@
+{
+  "assessment_id": "isp_01JTKA6BIMPACT001",
+  "event_record_id": "ctr_01JTK9R8M5A2X1QY7Z",
+  "trace_event_id": "ctid_01JTK9R8TRACEABC123",
+  "communication_id": "comm_note_thread_20260502_01",
+  "conversation_root_id": "conv_communication_royalty_os_01",
+  "artifact_id": "art_note_draft_summary_01",
+  "structure_refs": [
+    {
+      "structure_id": "sid_communication_royalty_os_core",
+      "relation": "refines"
+    },
+    {
+      "structure_id": "sid_trace_layer_architecture",
+      "relation": "references"
+    }
+  ],
+  "impact_score": 0.78,
+  "dimensions": {
+    "reference_strength": 0.82,
+    "transformation_weight": 0.74,
+    "novelty_delta": 0.69,
+    "dependency_weight": 0.81,
+    "downstream_reuse_potential": 0.77,
+    "semantic_centrality": 0.84,
+    "influence_scope": 0.71
+  },
+  "weight_profile": {
+    "reference_strength": 0.25,
+    "transformation_weight": 0.2,
+    "novelty_delta": 0.2,
+    "dependency_weight": 0.2,
+    "downstream_reuse_potential": 0.15
+  },
+  "score_formula": "Weighted sum of five core dimensions using the default v0.1 profile.",
+  "assessment_method": "hybrid",
+  "assessment_scope": "conversation",
+  "confidence": 0.86,
+  "evaluator": {
+    "evaluator_type": "hybrid_system",
+    "evaluator_id": "evaluator_kazene_hybrid_01",
+    "model_name": "GPT-5.5 Thinking",
+    "organization": "SamuraiWriter7 Lab"
+  },
+  "rationale": "This event materially shaped the downstream framing of the communication royalty discussion, contributed non-trivial structural refinement, and appears likely to be reused in later conceptual or documentation contexts.",
+  "evidence_refs": [
+    "log://trace/session/2026-05-02/001",
+    "artifact://drafts/note-summary-01",
+    "review://impact-assessment/conversation-root-01"
+  ],
+  "assessed_at": "2026-05-02T12:00:00Z"
+}
