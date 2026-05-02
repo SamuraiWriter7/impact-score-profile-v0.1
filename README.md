@@ -1,86 +1,24 @@
-# Trace Interoperability Profiles v0.1
+# Impact Score Profile v0.1
 
-This repository contains two draft interoperability profiles for trace-aware communication systems:
+Impact Score Profile v0.1 is a draft specification for evaluating how strongly a communication-derived trace event contributed to later meaning generation.
 
-- **CTR-ID Unified Protocol v0.1**  
-  A minimal identifier profile for connecting communication trace records across events, conversations, structures, and derived artifacts.
+It provides a minimal, decomposable scoring profile for trace-aware systems that need a shared way to assess contribution without collapsing everything into a single opaque score.
 
-- **Impact Score Profile v0.1**  
-  A minimal scoring profile for evaluating how strongly a communication-derived trace event contributed to later meaning generation.
-
-Together, these profiles provide a lightweight foundation for trace-aware systems that need both:
-
-1. **stable identifiers**, and  
-2. **decomposable contribution assessment**
-
-without forcing a full provenance graph or a full settlement system into the same layer.
+This repository currently focuses on the Impact Score Profile layer only.
 
 ---
 
 ## Why this repository exists
 
-Trace-oriented systems often fail for two reasons:
+Trace-aware systems often record events, references, and transformations, but they still face a core problem:
 
-- they do not identify things consistently
-- they do not evaluate contribution consistently
+> How much did a given event actually matter?
 
-In practice, different systems may confuse:
+A downstream output may reuse, transform, summarize, or structurally depend on earlier events, but without a common assessment profile, contribution remains inconsistent and difficult to compare.
 
-- the serialized record
-- the traceable event
-- the communication object
-- the larger conversation
-- the semantic structure
-- the derived artifact
+Impact Score Profile v0.1 exists to provide a lightweight, interoperable way to express that contribution.
 
-And even when those are distinguishable, systems still need a shared way to ask:
-
-> How much did this event actually contribute to later meaning generation?
-
-This repository exists to address those two problems separately but compatibly:
-
-- **CTR-ID** handles identifier interoperability
-- **Impact Score Profile** handles contribution assessment interoperability
-
----
-
-## Scope
-
-This repository currently focuses on two lightweight interoperability layers.
-
-### Included
-
-- identifier interoperability for trace-aware systems
-- decomposable impact assessment for trace events
-- schema validation
-- sample records
-- CI validation for schema/sample consistency
-
-### Not included
-
-- legal ownership determination
-- monetary settlement logic
-- full provenance graph serialization
-- cryptographic signature infrastructure
-- identity verification infrastructure
-- mandatory global registry behavior
-
----
-
-## Core idea
-
-A trace-aware system usually needs at least two layers:
-
-### Layer 1: Identity
-What exactly is being identified?
-
-### Layer 2: Evaluation
-How strongly did that identified event contribute to later meaning generation?
-
-CTR-ID answers the first question.  
-Impact Score Profile answers the second.
-
-That makes this repository useful as a minimal foundation for systems such as:
+It is intended to support systems such as:
 
 - attribution pipelines
 - audit systems
@@ -88,20 +26,63 @@ That makes this repository useful as a minimal foundation for systems such as:
 - gratitude systems
 - influence mapping
 - royalty candidate review
-- communication trace standards
+- adjacent communication trace systems
+
+---
+
+## Scope
+
+Impact Score Profile v0.1 defines a minimal profile for contribution assessment.
+
+It covers:
+
+- normalized total impact scoring
+- decomposed scoring dimensions
+- disclosed weight profiles
+- assessment method disclosure
+- assessment scope disclosure
+- evaluator metadata
+- optional evidence references
+- machine-validatable JSON Schema support
+
+It does **not** cover:
+
+- legal ownership determination
+- automatic monetary settlement
+- full provenance graph serialization
+- cryptographic signature infrastructure
+- identity verification infrastructure
+- mandatory scoring enforcement across all systems
+
+---
+
+## Core idea
+
+Impact Score Profile answers a simple but important question:
+
+> How strongly did this trace event contribute to later meaning generation?
+
+Instead of forcing systems to rely on a single unexplained score, this profile separates contribution into visible dimensions.
+
+That makes impact assessment:
+
+- more transparent
+- more auditable
+- more comparable
+- more reusable across systems
 
 ---
 
 ## Design principles
 
-- Keep each profile minimal.
-- Separate identity from evaluation.
-- Do not overload one ID with multiple semantic roles.
-- Do not collapse contribution assessment into a single opaque score.
-- Keep both formats machine-readable and human-auditable.
-- Prefer interoperability over premature complexity.
-- Do not equate trace with ownership.
-- Do not equate impact with payment.
+- Keep the profile minimal.
+- Prefer decomposable scoring over opaque scoring.
+- Separate contribution assessment from ownership determination.
+- Separate contribution assessment from monetary settlement.
+- Support human, AI, hybrid, and rule-based evaluation methods.
+- Make score interpretation more auditable by exposing dimensions and weights.
+- Allow multiple scopes of assessment.
+- Treat scores as evaluative signals, not final truth.
 
 ---
 
@@ -113,74 +94,42 @@ That makes this repository useful as a minimal foundation for systems such as:
 │   └── workflows/
 │       └── validate-specs.yml
 ├── examples/
-│   ├── ctr-id-unified-protocol.sample.json
 │   └── impact-score-profile.sample.json
 ├── schemas/
-│   ├── ctr-id-unified-protocol-v0.1.schema.json
 │   └── impact-score-profile-v0.1.schema.json
 ├── LICENSE
 ├── README.md
-├── ctr-id-unified-protocol-v0.1.yaml
 └── impact-score-profile-v0.1.yaml
 Start here
 
 Read the files in this order:
 
-ctr-id-unified-protocol-v0.1.yaml
-Human-readable source specification for CTR-ID v0.1.
-schemas/ctr-id-unified-protocol-v0.1.schema.json
-Machine-validatable JSON Schema for CTR-ID.
-examples/ctr-id-unified-protocol.sample.json
-Example CTR-ID record.
 impact-score-profile-v0.1.yaml
 Human-readable source specification for Impact Score Profile v0.1.
 schemas/impact-score-profile-v0.1.schema.json
-Machine-validatable JSON Schema for Impact Score Profile.
+Machine-validatable JSON Schema for the profile.
 examples/impact-score-profile.sample.json
-Example impact assessment record.
+Example impact assessment record that should validate successfully against the schema.
 .github/workflows/validate-specs.yml
-CI workflow that validates schema/sample consistency.
-Profile 1: CTR-ID Unified Protocol v0.1
+CI workflow that checks schema/sample consistency on every push and pull request.
+What this profile evaluates
 
-CTR-ID Unified Protocol v0.1 defines a minimal identifier profile for trace-aware communication systems.
+Impact Score Profile v0.1 is designed for evaluating a trace event or equivalent contribution unit.
 
-It distinguishes between:
+A valid assessment typically asks things like:
 
-the record instance
-the trace event
-the communication object
-the conversation lineage
-the semantic structure
-the derived artifact
-Main identifier classes
-event_record_id
-trace_event_id
-parent_trace_event_id
-derived_from_trace_ids
-communication_id
-session_id
-thread_id
-conversation_root_id
-artifact_id
-structure_refs[].structure_id
-Recommended prefixes
-ctr_ for record instances
-ctid_ for trace events
-comm_ for communication objects
-conv_ for conversation roots
-art_ for artifacts
-sid_ for semantic structures
+Was this event actually referenced?
+Did it materially transform the downstream result?
+Did it introduce meaningful novelty?
+Was the downstream result dependent on it?
+Is it likely to be reused later?
 
-CTR-ID is not a full provenance graph protocol.
-It is a small interoperability layer for clean identifier semantics.
+The profile does not claim that impact automatically implies ownership, entitlement, or payment.
 
-Profile 2: Impact Score Profile v0.1
+It only standardizes how contribution may be expressed.
 
-Impact Score Profile v0.1 defines a minimal, decomposable scoring profile for evaluating how strongly a communication-derived trace event contributed to later meaning generation.
-
-It is designed to avoid opaque scoring by exposing scoring dimensions directly.
-
-Core fields
+Main fields
+Required core fields
 assessment_id
 trace_event_id
 impact_score
@@ -189,49 +138,91 @@ assessment_method
 assessment_scope
 confidence
 assessed_at
+Optional context fields
+event_record_id
+communication_id
+conversation_root_id
+artifact_id
+structure_refs
+weight_profile
+score_formula
+evaluator
+rationale
+evidence_refs
 Core dimensions
+
+Impact Score Profile v0.1 uses these required core dimensions:
+
 reference_strength
 transformation_weight
 novelty_delta
 dependency_weight
 downstream_reuse_potential
-Optional dimensions
+
+Optional dimensions may also be included, such as:
+
 semantic_centrality
 influence_scope
 originality_support
 
-Impact Score Profile is not a legal ownership system and not a payment protocol.
-It is an evaluation layer for contribution assessment.
+All dimension values are normalized between 0.0 and 1.0.
 
-How the two profiles work together
+Interpretation guidance
 
-The intended relationship is simple:
+A total impact_score is a normalized signal, not an absolute truth.
 
-CTR-ID identifies the traceable unit
-Impact Score Profile evaluates that identified unit
+A rough interpretation may look like this:
 
-In other words:
+0.00 - 0.19 → negligible
+0.20 - 0.39 → low
+0.40 - 0.59 → moderate
+0.60 - 0.79 → high
+0.80 - 1.00 → critical
 
-CTR-ID answers what
-Impact Score answers how much
+These bands are interpretive guidance only.
 
-This separation keeps the system clean.
+A high impact score does not imply:
 
-Without identifier clarity, scoring becomes unstable.
-Without scoring clarity, identifiers remain descriptive but economically and socially inert.
+ownership
+legal entitlement
+mandatory payment
+exclusive authorship
+Assessment method and scope
 
-Together, they form a lightweight trace interoperability stack.
+The profile makes two distinctions explicit:
+
+Assessment method
+
+Allowed values:
+
+human
+ai
+hybrid
+rule_based
+Assessment scope
+
+Allowed values:
+
+local
+session
+thread
+conversation
+cross_system
+
+This matters because the same event may have different significance depending on the evaluator and the scope.
+
+A score of 0.78 at conversation scope does not necessarily mean the same thing as 0.78 at cross_system scope.
 
 Example use cases
 
-These profiles can support workflows such as:
+Impact Score Profile v0.1 can support cases such as:
 
-linking multiple trace events across a conversation
-distinguishing an event from its serialized record
-associating a trace event with a derived artifact
-tracking semantic continuity across summary, translation, or reframing
-scoring how strongly one event contributed to a downstream artifact
-ranking high-impact events for gratitude, trust, audit, or royalty-candidate review
+scoring how strongly one trace event shaped a downstream summary
+ranking candidate events for gratitude review
+identifying high-impact events for trust evaluation
+prioritizing audit attention toward materially influential events
+marking potential royalty-candidate events without forcing automatic settlement
+comparing local and conversation-level contribution patterns
 Schema usage
 Requirements
 Python 3.10+
@@ -241,7 +232,7 @@ Install the validator locally:
 
 python -m pip install --upgrade pip
 pip install jsonschema
-Validate all schemas and samples locally
+Validate the schema and sample locally
 
 Run the following command from the repository root:
 
@@ -251,220 +242,155 @@ import os
 import sys
 from jsonschema import Draft202012Validator
 
-validations = [
-    (
-        "CTR-ID Unified Protocol v0.1",
-        "schemas/ctr-id-unified-protocol-v0.1.schema.json",
-        "examples/ctr-id-unified-protocol.sample.json",
-    ),
-    (
-        "Impact Score Profile v0.1",
-        "schemas/impact-score-profile-v0.1.schema.json",
-        "examples/impact-score-profile.sample.json",
-    ),
-]
+label = "Impact Score Profile v0.1"
+schema_path = "schemas/impact-score-profile-v0.1.schema.json"
+sample_path = "examples/impact-score-profile.sample.json"
 
 failed = False
 
-for label, schema_path, sample_path in validations:
-    print(f"\n=== Validating {label} ===")
-    print(f"Schema: {schema_path}")
-    print(f"Sample: {sample_path}")
+print(f"\n=== Validating {label} ===")
+print(f"Schema: {schema_path}")
+print(f"Sample: {sample_path}")
 
-    if not os.path.exists(schema_path):
-        print(f"ERROR: Schema file not found: {schema_path}")
-        failed = True
-        continue
+if not os.path.exists(schema_path):
+    print(f"ERROR: Schema file not found: {schema_path}")
+    failed = True
 
-    if not os.path.exists(sample_path):
-        print(f"ERROR: Sample file not found: {sample_path}")
-        failed = True
-        continue
-
-    try:
-        with open(schema_path, "r", encoding="utf-8") as f:
-            schema = json.load(f)
-    except json.JSONDecodeError as e:
-        print(f"ERROR: Invalid JSON in {schema_path}: {e}")
-        failed = True
-        continue
-
-    try:
-        with open(sample_path, "r", encoding="utf-8") as f:
-            sample = json.load(f)
-    except json.JSONDecodeError as e:
-        print(f"ERROR: Invalid JSON in {sample_path}: {e}")
-        failed = True
-        continue
-
-    try:
-        Draft202012Validator.check_schema(schema)
-    except Exception as e:
-        print(f"ERROR: Invalid schema in {schema_path}: {e}")
-        failed = True
-        continue
-
-    try:
-        validator = Draft202012Validator(schema)
-        errors = sorted(validator.iter_errors(sample), key=lambda e: list(e.path))
-
-        if errors:
-            print(f"ERROR: Validation failed for {label}")
-            for err in errors:
-                path = ".".join(str(x) for x in err.path) if err.path else "<root>"
-                print(f" - {path}: {err.message}")
-            failed = True
-        else:
-            print(f"OK: {label} sample is valid.")
-    except Exception as e:
-        print(f"ERROR: Exception while validating {label}: {e}")
-        failed = True
+if not os.path.exists(sample_path):
+    print(f"ERROR: Sample file not found: {sample_path}")
+    failed = True
 
 if failed:
     print("\nValidation failed.")
     sys.exit(1)
 
-print("\nAll validations passed.")
-PY
-Validate only CTR-ID
-python - <<'PY'
-import json
-from jsonschema import Draft202012Validator
+try:
+    with open(schema_path, "r", encoding="utf-8") as f:
+        schema = json.load(f)
+except json.JSONDecodeError as e:
+    print(f"ERROR: Invalid JSON in {schema_path}: {e}")
+    sys.exit(1)
 
-schema_path = "schemas/ctr-id-unified-protocol-v0.1.schema.json"
-sample_path = "examples/ctr-id-unified-protocol.sample.json"
+try:
+    with open(sample_path, "r", encoding="utf-8") as f:
+        sample = json.load(f)
+except json.JSONDecodeError as e:
+    print(f"ERROR: Invalid JSON in {sample_path}: {e}")
+    sys.exit(1)
 
-with open(schema_path, "r", encoding="utf-8") as f:
-    schema = json.load(f)
+try:
+    Draft202012Validator.check_schema(schema)
+except Exception as e:
+    print(f"ERROR: Invalid schema in {schema_path}: {e}")
+    sys.exit(1)
 
-with open(sample_path, "r", encoding="utf-8") as f:
-    sample = json.load(f)
-
-Draft202012Validator.check_schema(schema)
 validator = Draft202012Validator(schema)
 errors = sorted(validator.iter_errors(sample), key=lambda e: list(e.path))
 
 if errors:
-    print("Validation failed:")
+    print("ERROR: Validation failed")
     for err in errors:
         path = ".".join(str(x) for x in err.path) if err.path else "<root>"
         print(f" - {path}: {err.message}")
-else:
-    print("OK: CTR-ID sample is valid.")
-PY
-Validate only Impact Score Profile
-python - <<'PY'
-import json
-from jsonschema import Draft202012Validator
+    sys.exit(1)
 
-schema_path = "schemas/impact-score-profile-v0.1.schema.json"
-sample_path = "examples/impact-score-profile.sample.json"
-
-with open(schema_path, "r", encoding="utf-8") as f:
-    schema = json.load(f)
-
-with open(sample_path, "r", encoding="utf-8") as f:
-    sample = json.load(f)
-
-Draft202012Validator.check_schema(schema)
-validator = Draft202012Validator(schema)
-errors = sorted(validator.iter_errors(sample), key=lambda e: list(e.path))
-
-if errors:
-    print("Validation failed:")
-    for err in errors:
-        path = ".".join(str(x) for x in err.path) if err.path else "<root>"
-        print(f" - {path}: {err.message}")
-else:
-    print("OK: Impact Score Profile sample is valid.")
+print("OK: Impact Score Profile v0.1 sample is valid.")
 PY
 CI validation
 
-This repository validates schema/sample pairs in GitHub Actions through:
+This repository validates the schema/sample pair in GitHub Actions through:
 
 .github/workflows/validate-specs.yml
 
-The workflow is intended to run on push and pull request events so that broken schemas, broken samples, or missing files are detected early.
+The workflow is intended to run on push and pull request events so that missing files, invalid JSON, schema drift, and sample mismatches are caught early.
 
 Validation expectations
-For CTR-ID records
 
-A valid CTR-ID record should satisfy at least the following:
+A valid Impact Score Profile record should satisfy at least the following:
 
-event_record_id must match the ctr_ pattern
-trace_event_id must match the ctid_ pattern
-parent_trace_event_id, when present, must match the ctid_ pattern
-derived_from_trace_ids, when present, must contain only ctid_ identifiers
-communication_id, when present, must match the comm_ pattern
-conversation_root_id, when present, must match the conv_ pattern
-artifact_id, when present, must match the art_ pattern
-structure_refs[*].structure_id must match the sid_ pattern
-structure_refs[*].relation must use only allowed relation values
-For Impact Score Profile records
-
-A valid impact assessment should satisfy at least the following:
-
-assessment_id must match the isp_ pattern
-trace_event_id must match the ctid_ pattern
+assessment_id must match the isp_ identifier pattern
+trace_event_id must match the ctid_ identifier pattern
 impact_score must be between 0.0 and 1.0
 confidence must be between 0.0 and 1.0
 all required core dimensions must be present
 each dimension score must be between 0.0 and 1.0
 assessment_method must use an allowed enum value
 assessment_scope must use an allowed enum value
+structure_refs[*].structure_id, when present, must match the sid_ pattern
 structure_refs[*].relation, when present, must use allowed relation values
+assessed_at must be a valid date-time string
 
-Some higher-order checks remain implementation-level concerns, such as:
+Some higher-order checks remain implementation-level concerns rather than pure schema constraints, for example:
 
-whether the declared lineage is semantically justified
-whether the impact score matches the rationale
+whether the rationale truly supports the score
 whether the chosen weight profile is appropriate
-whether optional dimensions should alter the total score interpretation
+whether the declared impact matches actual downstream dependency
+whether optional dimensions should materially change interpretation
+Current example profile
+
+The current sample demonstrates:
+
+a unique impact assessment record ID
+a CTID-style trace event reference
+a normalized total impact score
+required core dimensions
+an optional weight profile
+evaluator metadata
+rationale text
+evidence references
+semantic structure references
+an assessment timestamp
+
+This sample is intentionally minimal but sufficient for schema validation and downstream experimentation.
+
+Relationship to adjacent systems
+
+Impact Score Profile v0.1 is designed to work alongside systems such as:
+
+communication trace record formats
+identifier interoperability layers
+attribution systems
+audit systems
+trust-event systems
+gratitude-event systems
+influence graph builders
+royalty candidate review systems
+
+It is not itself:
+
+a trace recording format
+a legal ownership protocol
+a settlement engine
+a provenance graph format
+
+It is a lightweight assessment layer.
+
 Privacy note
 
-These profiles are designed to be compatible with privacy-aware systems.
+Impact Score Profile is an assessment profile, not a mandate for full content retention.
 
 Implementations are encouraged to prefer:
 
-scoped identifiers over unnecessary identity exposure
-reference-based linkage over raw content retention
-privacy-aware retention policies
-separation between identifiers, assessments, and personal content
+references over unnecessary raw payload retention
+scoped identifiers over excessive identity exposure
+privacy-aware storage and retention policies
+clear separation between scores, identifiers, and personal content
 
-Trace interoperability should not be treated as a justification for unlimited content retention.
+Impact interoperability should not be treated as a justification for unlimited surveillance or retention.
 
 Current status
 Status: Draft
 Version: v0.1
 
-This repository is intended as a minimal working foundation for:
+This version is intended as a minimal working profile for:
 
 drafting
 schema validation
-identifier interoperability testing
 contribution assessment testing
 downstream protocol experimentation
 
 It should be treated as a stable draft for structural use, not as a final institutional or legal standard.
 
-Relationship to adjacent systems
-
-These profiles are designed to work alongside systems such as:
-
-communication trace record formats
-attribution pipelines
-trust-event systems
-gratitude-event systems
-audit systems
-influence graph builders
-royalty candidate review systems
-
-This repository does not attempt to be all of those things at once.
-
-It focuses on two narrow but essential layers:
-
-identity interoperability
-impact assessment interoperability
 Roadmap
 
 Possible next steps include:
@@ -472,11 +398,10 @@ Possible next steps include:
 stricter schema refinements
 pass/fail compliance test vectors
 optional signature and verification fields
-richer lineage rules
-score-profile comparison guidance
+richer assessment comparison guidance
 explicit mapping to trust / gratitude / royalty layers
-relationship documents to adjacent trace standards
-provenance bridge profiles
+relationship profiles for trace-record systems
+governance guidance for score issuance and reuse
 Contributing
 
 Contributions that improve clarity, interoperability, and validation rigor are welcome.
@@ -492,9 +417,9 @@ downstream mapping proposals
 
 When proposing changes, try to preserve the core design principles:
 
-separate identity from evaluation
-separate trace from ownership
-separate impact from payment
+separate contribution assessment from ownership
+separate contribution assessment from payment
+prefer decomposable scoring over opaque scoring
 
 License
 
@@ -502,4 +427,4 @@ This repository is distributed under the terms of the repository-level LICENSE f
 
 One-line summary
 
-This repository provides two minimal interoperability profiles for trace-aware systems: CTR-ID for identifier clarity, and Impact Score Profile for decomposable contribution assessment.
+Impact Score Profile v0.1 is a minimal, decomposable scoring profile for evaluating how strongly a communication-derived trace event contributed to later meaning generation.
