@@ -1,0 +1,306 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/impact-score-profile-v0.1.schema.json",
+  "title": "Impact Score Profile v0.1",
+  "description": "JSON Schema for a minimal, decomposable impact assessment profile used to evaluate how strongly a communication-derived trace event contributed to later meaning generation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "assessment_id",
+    "trace_event_id",
+    "impact_score",
+    "dimensions",
+    "assessment_method",
+    "assessment_scope",
+    "confidence",
+    "assessed_at"
+  ],
+  "$defs": {
+    "bounded_score": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "structure_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "structure_id",
+        "relation"
+      ],
+      "properties": {
+        "structure_id": {
+          "type": "string",
+          "pattern": "^sid_[A-Za-z0-9._:-]{8,128}$",
+          "description": "Identifier for a higher-order meaning structure."
+        },
+        "relation": {
+          "type": "string",
+          "enum": [
+            "originates",
+            "references",
+            "refines",
+            "transforms",
+            "summarizes",
+            "translates",
+            "critiques",
+            "merges",
+            "branches_from",
+            "instantiates"
+          ],
+          "description": "Declared relation between the assessed event and the referenced structure."
+        }
+      }
+    },
+    "dimensions_core": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference_strength",
+        "transformation_weight",
+        "novelty_delta",
+        "dependency_weight",
+        "downstream_reuse_potential"
+      ],
+      "properties": {
+        "reference_strength": {
+          "$ref": "#/$defs/bounded_score",
+          "description": "How strongly the event was referenced, used, or relied upon downstream."
+        },
+        "transformation_weight": {
+          "$ref": "#/$defs/bounded_score",
+          "description": "How strongly the event shaped transformation, reframing, summarization, translation, or restructuring."
+        },
+        "novelty_delta": {
+          "$ref": "#/$defs/bounded_score",
+          "description": "How much new structure or meaningful differentiation emerged through this event."
+        },
+        "dependency_weight": {
+          "$ref": "#/$defs/bounded_score",
+          "description": "How difficult it would have been for downstream meaning generation to occur similarly without this event."
+        },
+        "downstream_reuse_potential": {
+          "$ref": "#/$defs/bounded_score",
+          "description": "How likely this event is to be reused or propagated downstream."
+        },
+        "semantic_centrality": {
+          "$ref": "#/$defs/bounded_score",
+          "description": "Whether the event was central to core meaning rather than peripheral."
+        },
+        "influence_scope": {
+          "$ref": "#/$defs/bounded_score",
+          "description": "Breadth of downstream effect across session, thread, conversation, or cross-system contexts."
+        },
+        "originality_support": {
+          "$ref": "#/$defs/bounded_score",
+          "description": "Degree to which the event supported an original pattern, framing, or structural breakthrough."
+        }
+      }
+    },
+    "weight_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reference_strength": {
+          "$ref": "#/$defs/bounded_score"
+        },
+        "transformation_weight": {
+          "$ref": "#/$defs/bounded_score"
+        },
+        "novelty_delta": {
+          "$ref": "#/$defs/bounded_score"
+        },
+        "dependency_weight": {
+          "$ref": "#/$defs/bounded_score"
+        },
+        "downstream_reuse_potential": {
+          "$ref": "#/$defs/bounded_score"
+        },
+        "semantic_centrality": {
+          "$ref": "#/$defs/bounded_score"
+        },
+        "influence_scope": {
+          "$ref": "#/$defs/bounded_score"
+        },
+        "originality_support": {
+          "$ref": "#/$defs/bounded_score"
+        }
+      },
+      "description": "Optional disclosed weights used to compute the total impact score. Implementations should ensure weights sum to 1.0 when a weighted total is used."
+    }
+  },
+  "properties": {
+    "assessment_id": {
+      "type": "string",
+      "pattern": "^isp_[A-Za-z0-9._:-]{8,128}$",
+      "description": "Unique identifier of this impact assessment record."
+    },
+    "event_record_id": {
+      "type": "string",
+      "pattern": "^ctr_[A-Za-z0-9._:-]{8,128}$",
+      "description": "Optional related serialized record identifier."
+    },
+    "trace_event_id": {
+      "type": "string",
+      "pattern": "^ctid_[A-Za-z0-9._:-]{8,128}$",
+      "description": "Stable identifier of the evaluated trace event."
+    },
+    "communication_id": {
+      "type": "string",
+      "pattern": "^comm_[A-Za-z0-9._:-]{8,128}$",
+      "description": "Optional communication object identifier."
+    },
+    "conversation_root_id": {
+      "type": "string",
+      "pattern": "^conv_[A-Za-z0-9._:-]{8,128}$",
+      "description": "Optional conversation lineage root identifier."
+    },
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^art_[A-Za-z0-9._:-]{8,128}$",
+      "description": "Optional related downstream artifact identifier."
+    },
+    "structure_refs": {
+      "type": "array",
+      "description": "Optional semantic structure references relevant to assessment.",
+      "items": {
+        "$ref": "#/$defs/structure_ref"
+      }
+    },
+    "impact_score": {
+      "$ref": "#/$defs/bounded_score",
+      "description": "Normalized total impact score."
+    },
+    "dimensions": {
+      "$ref": "#/$defs/dimensions_core",
+      "description": "Decomposed scoring dimensions used to explain the total impact score."
+    },
+    "weight_profile": {
+      "$ref": "#/$defs/weight_profile"
+    },
+    "score_formula": {
+      "type": "string",
+      "description": "Optional human-readable formula or method note used to compute impact_score."
+    },
+    "assessment_method": {
+      "type": "string",
+      "enum": [
+        "human",
+        "ai",
+        "hybrid",
+        "rule_based"
+      ],
+      "description": "Method used to produce the assessment."
+    },
+    "assessment_scope": {
+      "type": "string",
+      "enum": [
+        "local",
+        "session",
+        "thread",
+        "conversation",
+        "cross_system"
+      ],
+      "description": "Scope within which the score is intended to be interpreted."
+    },
+    "confidence": {
+      "$ref": "#/$defs/bounded_score",
+      "description": "Confidence in the assessment itself."
+    },
+    "evaluator": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional evaluator metadata.",
+      "properties": {
+        "evaluator_type": {
+          "type": "string",
+          "enum": [
+            "human",
+            "ai",
+            "hybrid_system",
+            "rule_engine"
+          ]
+        },
+        "evaluator_id": {
+          "type": "string"
+        },
+        "model_name": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        }
+      }
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Human-readable explanation of why this score was assigned."
+    },
+    "evidence_refs": {
+      "type": "array",
+      "description": "Optional references to logs, artifacts, or audit evidence.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assessed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the assessment was produced."
+    }
+  },
+  "examples": [
+    {
+      "assessment_id": "isp_01JTKA6BIMPACT001",
+      "event_record_id": "ctr_01JTK9R8M5A2X1QY7Z",
+      "trace_event_id": "ctid_01JTK9R8TRACEABC123",
+      "communication_id": "comm_note_thread_20260502_01",
+      "conversation_root_id": "conv_communication_royalty_os_01",
+      "artifact_id": "art_note_draft_summary_01",
+      "structure_refs": [
+        {
+          "structure_id": "sid_communication_royalty_os_core",
+          "relation": "refines"
+        },
+        {
+          "structure_id": "sid_trace_layer_architecture",
+          "relation": "references"
+        }
+      ],
+      "impact_score": 0.78,
+      "dimensions": {
+        "reference_strength": 0.82,
+        "transformation_weight": 0.74,
+        "novelty_delta": 0.69,
+        "dependency_weight": 0.81,
+        "downstream_reuse_potential": 0.77,
+        "semantic_centrality": 0.84,
+        "influence_scope": 0.71
+      },
+      "weight_profile": {
+        "reference_strength": 0.25,
+        "transformation_weight": 0.2,
+        "novelty_delta": 0.2,
+        "dependency_weight": 0.2,
+        "downstream_reuse_potential": 0.15
+      },
+      "score_formula": "Weighted sum of five core dimensions using the default v0.1 profile.",
+      "assessment_method": "hybrid",
+      "assessment_scope": "conversation",
+      "confidence": 0.86,
+      "evaluator": {
+        "evaluator_type": "hybrid_system",
+        "evaluator_id": "evaluator_kazene_hybrid_01",
+        "model_name": "GPT-5.5 Thinking",
+        "organization": "SamuraiWriter7 Lab"
+      },
+      "rationale": "This event materially shaped the downstream framing of the communication royalty discussion, contributed non-trivial structural refinement, and appears likely to be reused in later conceptual or documentation contexts.",
+      "evidence_refs": [
+        "log://trace/session/2026-05-02/001",
+        "artifact://drafts/note-summary-01",
+        "review://impact-assessment/conversation-root-01"
+      ],
+      "assessed_at": "2026-05-02T12:00:00Z"
+    }
+  ]
+}
